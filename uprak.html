@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Smak 1 — Dashboard Guru</title>
+    <style>
+      :root{
+        --font-sans: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, system-ui, sans-serif;
+        --bg:#f0f4f9;
+        --card:#ffffff;
+        --muted:#64748b;
+        --accent:#3b82f6;
+        --accent-600:#2563eb;
+        --accent-hover:#1d4ed8;
+        --success:#10b981;
+        --danger:#f43f5e;
+        --warning:#f59e0b;
+        --border:#e2e8f0;
+        --glass: rgba(255,255,255,0.8);
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      }
+
+      * { box-sizing: border-box; }
+
+      html,body,#root{
+        height:100%;
+        margin:0;
+        background:linear-gradient(135deg,#f0f4f9 0%,#e0e7ff 50%,#f0f4f9 100%);
+        font-family:var(--font-sans);
+        color:#1e293b;
+        line-height:1.6;
+      }
+
+      .container{max-width:1000px;margin:0 auto;padding:20px 24px}
+
+      .nav{
+        background:var(--card);
+        display:flex;justify-content:space-between;align-items:center;
+        padding:16px 24px;margin:16px auto;max-width:1000px;border-radius:12px;
+        box-shadow:var(--shadow-md);border:1px solid var(--border);
+      }
+
+      .nav div:first-child{font-weight:900;color:var(--accent-600);font-size:1.1rem;letter-spacing:-0.5px}
+
+      .nav div:last-child{display:flex;gap:2px}
+
+      .nav a{
+        color:#475569;text-decoration:none;padding:10px 16px;border-radius:10px;
+        font-weight:600;font-size:0.95rem;transition:all 0.2s cubic-bezier(0.4,0,0.2,1);
+        border:1px solid transparent;
+      }
+
+      .nav a:hover{
+        background:rgba(59,130,246,0.08);color:var(--accent-600);
+        transform:translateY(-1px);border-color:var(--border);
+      }
+
+      .nav a.active{
+        background:var(--accent);color:white;border-color:var(--accent);
+      }
+
+      .nav a.active:hover{
+        background:var(--accent-hover);
+      }
+
+      .hero{
+        background:linear-gradient(135deg,rgba(59,130,246,0.04),rgba(59,130,246,0.02));
+        padding:40px 32px;border-radius:16px;margin-top:20px;
+        border:1px solid var(--border);box-shadow:var(--shadow-sm);
+      }
+
+      .hero h2{margin:0 0 12px 0;font-size:2rem;font-weight:900;letter-spacing:-1px;color:#1e293b}
+
+      .hero p{margin:0;color:var(--muted);font-size:1.05rem;line-height:1.7}
+
+      .card{
+        background:var(--card);padding:28px;border-radius:14px;margin-top:20px;
+        border:1px solid var(--border);box-shadow:var(--shadow-md);
+        transition:all 0.2s ease;
+      }
+
+      .card:hover{box-shadow:var(--shadow-lg)}
+
+      .card h3{margin:0 0 16px 0;font-size:1.35rem;font-weight:900;color:#1e293b}
+
+      .card p{color:var(--muted);line-height:1.7;margin:0 0 12px 0}
+
+      .card ul{margin:12px 0;padding-left:20px;color:var(--muted)}
+
+      .card li{margin:8px 0;font-weight:500}
+
+      .row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+
+      .row > div{flex:1;min-width:180px}
+
+      label{
+        display:block;font-weight:700;color:#1e293b;margin-bottom:8px;font-size:0.85rem;
+        text-transform:uppercase;letter-spacing:0.5px;
+      }
+
+      .inputs input,input[type="date"],input[type="time"],input[type="number"]{
+        width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;
+        background:#ffffff;font-family:var(--font-sans);font-size:0.95rem;font-weight:500;color:#1e293b;
+        transition:all 0.2s ease;
+      }
+
+      input:focus{
+        outline:none;border-color:var(--accent-600);background:#ffffff;box-shadow:0 0 0 3px rgba(59,130,246,0.1);
+      }
+
+      select:focus{
+        outline:none;border-color:var(--accent-600);box-shadow:0 0 0 3px rgba(59,130,246,0.1);
+      }
+
+      button{
+        background:var(--accent);color:white;border:none;padding:12px 20px;border-radius:10px;
+        cursor:pointer;box-shadow:var(--shadow-sm);font-weight:700;font-size:0.95rem;
+        transition:all 0.2s ease;letter-spacing:0.3px;
+      }
+
+      button:hover{
+        background:var(--accent-hover);transform:translateY(-2px);box-shadow:var(--shadow-md);
+      }
+
+      button:active{transform:translateY(0);box-shadow:var(--shadow-sm)}
+
+      button.secondary{
+        background:#f1f5f9;color:#475569;border:1.5px solid var(--border);box-shadow:none;
+      }
+
+      button.secondary:hover{background:#e2e8f0;border-color:var(--accent)}
+
+      .muted{color:var(--muted);font-size:0.95rem}
+
+      table{width:100%;border-collapse:separate;border-spacing:0 10px;margin-top:16px}
+
+      thead th{
+        background:transparent;color:#64748b;font-weight:800;padding:12px 14px;
+        text-align:left;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;
+      }
+
+      tbody tr{
+        background:linear-gradient(135deg,#fafbfc,#ffffff);border-radius:12px;
+        border:1px solid var(--border);transition:all 0.2s ease;
+      }
+
+      tbody tr:hover{box-shadow:var(--shadow-md);border-color:var(--accent)}
+
+      tbody tr td{padding:14px 16px;border:none;font-weight:500}
+
+      tbody tr td:first-child{font-weight:700;color:#1e293b}
+
+      .pill{
+        display:inline-block;padding:8px 14px;border-radius:999px;font-weight:700;
+        font-size:0.8rem;letter-spacing:0.3px;
+      }
+
+      .present{background:#dcfce7;color:#166534;border:1px solid #86efac}
+
+      .absent{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+
+      .excused{background:#fef08a;color:#92400e;border:1px solid #facc15}
+
+      .not-filled{background:#e5e7eb;color:#6b7280;border:1px solid #d1d5db}
+
+      .actions{display:flex;gap:6px;flex-wrap:wrap}
+
+      .actions button{padding:8px 12px;font-size:0.85rem;background:#f1f5f9;color:#475569;border:1px solid var(--border)}
+
+      .actions button:hover{background:var(--border);color:#1e293b}
+
+      @media (max-width:768px){
+        .container{padding:16px 16px}
+        .nav{flex-direction:column;gap:12px;text-align:center}
+        .nav div:first-child{width:100%}
+        .nav div:last-child{width:100%;justify-content:center}
+        .row{flex-direction:column;gap:12px}
+        .row > div{min-width:100%}
+        .hero{padding:32px 20px;margin-top:16px}
+        .hero h2{font-size:1.6rem}
+        .card{padding:20px}
+        table{border-spacing:0 8px}
+        .actions{flex-direction:column}
+        .actions button{width:100%}
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script>
+      // Simple offline single-file app (vanilla JS)
+      (function(){
+        const root = document.getElementById('root');
+
+        // --- state ---
+        let route = location.hash.replace('#','') || '/';
+
+        // Student lists
+        const students_XII2 = [
+          {id:1,name:'Anthony Tiarjata',code:'XII2/2025/001'},
+          {id:2,name:'Bennett Edderidge Lee',code:'XII2/2025/002'},
+          {id:3,name:'Catherine Nicole Yuen',code:'XII2/2025/003'},
+          {id:4,name:'Darryl Nathanael',code:'XII2/2025/004'},
+          {id:5,name:'Elaene Lee',code:'XII2/2025/005'},
+          {id:6,name:'Gabriel Nugroho',code:'XII2/2025/006'},
+          {id:7,name:'Jane Zeyania Sugianto',code:'XII2/2025/007'},
+          {id:8,name:'Jessica Belle',code:'XII2/2025/008'},
+          {id:9,name:'Michael Dharmawan',code:'XII2/2025/009'},
+          {id:10,name:'Michelle Surjani',code:'XII2/2025/010'},
+        ];
+
+        // Attendance data per subject and date
+        const attendanceData = {
+          'Math': {},
+          'Physics': {},
+          'English': {}
+        };
+
+        const subjects = ['Math','Physics','English'];
+        
+        // Score storage: organized by subject, quiz number, and semester (working copy)
+        const scoresStorage = {
+          Math: { 1: { 1: {}, 2: {} }, 2: { 1: {}, 2: {} }, 3: { 1: {}, 2: {} } },
+          Physics: { 1: { 1: {}, 2: {} }, 2: { 1: {}, 2: {} }, 3: { 1: {}, 2: {} } },
+          English: { 1: { 1: {}, 2: {} }, 2: { 1: {}, 2: {} }, 3: { 1: {}, 2: {} } }
+        };
+        // Initialize student scores
+        students_XII2.forEach(s => {
+          ['Math', 'Physics', 'English'].forEach(subj => {
+            [1,2,3].forEach(quiz => {
+              [1,2].forEach(sem => {
+                scoresStorage[subj][quiz][sem][s.id] = '';
+              });
+            });
+          });
+        });
+
+        // Score recap storage: saved scores organized by subject, quiz, semester (persistent)
+        const scoresRecap = {
+          Math: { 1: { 1: {}, 2: {} }, 2: { 1: {}, 2: {} }, 3: { 1: {}, 2: {} } },
+          Physics: { 1: { 1: {}, 2: {} }, 2: { 1: {}, 2: {} }, 3: { 1: {}, 2: {} } },
+          English: { 1: { 1: {}, 2: {} }, 2: { 1: {}, 2: {} }, 3: { 1: {}, 2: {} } }
+        };
+        // Initialize recap scores
+        students_XII2.forEach(s => {
+          ['Math', 'Physics', 'English'].forEach(subj => {
+            [1,2,3].forEach(quiz => {
+              [1,2].forEach(sem => {
+                scoresRecap[subj][quiz][sem][s.id] = '';
+              });
+            });
+          });
+        });
+
+        const state = {
+          absenceSubject: 'Math',
+          date: '2025-02-13',
+          saving: false,
+          students: JSON.parse(JSON.stringify(students_XII2.map(s => ({...s, status: ''})))),
+          scoreSubject: 'Math',
+          scoreQuiz: '1',
+          scoreSemester: '1'
+        };
+        function h(tag, attrs={}, children=''){
+          const el = document.createElement(tag);
+          for(const k in attrs){
+            if(k.startsWith('on') && typeof attrs[k] === 'function') el.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
+            else if(k==='html') el.innerHTML = attrs[k];
+            else el.setAttribute(k, attrs[k]);
+          }
+          if(typeof children === 'string') el.appendChild(document.createTextNode(children));
+          else if(Array.isArray(children)) children.forEach(c=>{ if(c) el.appendChild(c); });
+          else if(children instanceof Node) el.appendChild(children);
+          return el;
+        }
+
+        function clearRoot(){ root.innerHTML = ''; }
+
+        // --- render pieces ---
+        function renderNav(){
+          const nav = h('div',{class:'nav container'});
+          nav.appendChild(h('div',{},'SMAK 1'));
+          const links = h('div');
+          links.appendChild(linkA('/', 'Home', route));
+          links.appendChild(linkA('/absence', 'Absence', route));
+          links.appendChild(linkA('/recap', 'Recap', route));
+          links.appendChild(linkA('/scores', 'Scores', route));
+          links.appendChild(linkA('/scores-recap', 'Scores Recap', route));
+          nav.appendChild(links);
+          return nav;
+        }
+
+        function linkA(p, text, currentRoute){
+          const a = h('a',{href:'#'+p}); 
+          a.style.marginLeft='12px'; 
+          a.style.fontWeight='600'; 
+          a.textContent = text;
+          if(currentRoute === p) a.classList.add('active');
+          return a;
+        }
+
+        function renderHome(){
+          const c = h('div',{class:'container'});
+          const hero = h('div',{class:'hero'});
+          hero.appendChild(h('h2',{},'SMAK 1 — DASHBOARD GURU'));
+          hero.appendChild(h('p',{class:'muted'},'Membuat kegiatan pembelajaran dan penilaian semakin mudah.'));
+          c.appendChild(hero);
+
+          const card = h('div',{class:'card'});
+          card.appendChild(h('h3',{},'Fitur Seru di Sini'));
+          card.appendChild(h('p',{},'Kelola kehadiran dan nilai siswa jadi lebih gampang—semua dalam satu aplikasi.'));
+          const ul = h('ul');
+          ['Pantau Kehadiran','Catat Nilai Siswa','Akses Offline'].forEach(t=> {
+            const li = h('li');
+            li.innerHTML = t;
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+          c.appendChild(card);
+          return c;
+        }
+
+        function renderAbsence(){
+          const c = h('div',{class:'container'});
+
+          // controls section
+          const ctrl = h('div',{class:'card'});
+          ctrl.appendChild(h('h3',{},'Subjects'));
+          
+          const row = h('div',{class:'row inputs'});
+          
+          const in1 = h('div');
+          in1.appendChild(h('label',{},'Subject'));
+          const selectSubj = h('select');
+          selectSubj.innerHTML = '<option value="Math">Math</option><option value="Physics">Physics</option><option value="English">English</option>';
+          selectSubj.value = state.absenceSubject;
+          selectSubj.addEventListener('change', e=> { 
+            // Save current subject's attendance data
+            const dateKey = state.date;
+            attendanceData[state.absenceSubject] = attendanceData[state.absenceSubject] || {};
+            attendanceData[state.absenceSubject][dateKey] = JSON.parse(JSON.stringify(state.students));
+            
+            // Switch to new subject
+            state.absenceSubject = e.target.value;
+            
+            // Load new subject's attendance data
+            attendanceData[state.absenceSubject] = attendanceData[state.absenceSubject] || {};
+            if(attendanceData[state.absenceSubject][dateKey]) {
+              state.students = JSON.parse(JSON.stringify(attendanceData[state.absenceSubject][dateKey]));
+            } else {
+              state.students = JSON.parse(JSON.stringify(students_XII2.map(s => ({...s, status: ''}))));
+            }
+            rerender();
+          });
+          selectSubj.style.cssText = 'width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;background:#ffffff;font-family:var(--font-sans);font-size:0.95rem;font-weight:600;color:#1e293b;cursor:pointer;transition:all 0.2s ease;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%232563eb\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:20px;padding-right:40px;';
+          selectSubj.addEventListener('focus', e => { 
+            e.target.style.borderColor = 'var(--accent-600)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
+          });
+          selectSubj.addEventListener('blur', e => { 
+            e.target.style.borderColor = 'var(--border)';
+            e.target.style.boxShadow = 'none';
+          });
+          in1.appendChild(selectSubj);
+          row.appendChild(in1);
+
+          ctrl.appendChild(row);
+          c.appendChild(ctrl);
+
+          // attendance card
+          const att = h('div',{class:'card'});
+          att.appendChild(h('h3',{},'Mark Attendance - ' + state.absenceSubject));
+          
+          const header = h('div',{style:'display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap'});
+          const info = h('div');
+          info.appendChild(h('div',{style:'font-weight:700;font-size:1.05rem;color:#1e293b'},'XII2 - ' + state.absenceSubject));
+          header.appendChild(info);
+
+          const actions = h('div',{style:'display:flex;gap:8px;flex-wrap:wrap'});
+          const markAllBtn = h('button',{},'✓ Mark All Present'); 
+          markAllBtn.addEventListener('click', ()=>{ state.students = state.students.map(s=> ({...s,status:'present'})); rerender(); });
+          actions.appendChild(markAllBtn);
+          
+          const saveBtn = h('button',{}, state.saving? '⏳ Saving...':'💾 Save Changes'); 
+          saveBtn.addEventListener('click', ()=>{ 
+            // Save current subject's attendance data
+            const dateKey = state.date;
+            attendanceData[state.absenceSubject] = attendanceData[state.absenceSubject] || {};
+            attendanceData[state.absenceSubject][dateKey] = JSON.parse(JSON.stringify(state.students));
+            // Show saving animation
+            state.saving = true; 
+            rerender(); 
+            setTimeout(()=>{ state.saving=false; rerender(); },900); 
+          });
+          actions.appendChild(saveBtn);
+          header.appendChild(actions);
+          att.appendChild(header);
+
+          // table
+          const tableWrap = h('div');
+          const table = h('table');
+          const trh = h('tr');
+          trh.appendChild(h('th',{},'Student Name'));
+          trh.appendChild(h('th',{},'ID Code'));
+          trh.appendChild(h('th',{},'Status'));
+          trh.appendChild(h('th',{},'Actions'));
+          table.appendChild(trh);
+
+          const tbody = h('tbody');
+          state.students.forEach(s=>{
+            const tr = h('tr');
+            const td1 = h('td',{style:'font-weight:700'}); td1.textContent = s.name;
+            const td2 = h('td',{style:'font-size:0.85rem;color:var(--muted)'}); td2.textContent = s.code;
+            const td3 = h('td');
+            td3.appendChild(h('span',{class:'pill '+ (s.status===''?'not-filled':s.status==='present'?'present': s.status==='absent'?'absent':'excused')}, s.status===''?'Not Filled':capitalize(s.status)));
+            
+            const td4 = h('td',{class:'actions'});
+            const b1 = h('button',{},'Present'); b1.addEventListener('click', ()=>{ s.status='present'; rerender(); });
+            const b2 = h('button',{},'Absent'); b2.addEventListener('click', ()=>{ s.status='absent'; rerender(); });
+            const b3 = h('button',{},'Excused'); b3.addEventListener('click', ()=>{ s.status='excused'; rerender(); });
+            
+            td4.appendChild(b1); td4.appendChild(b2); td4.appendChild(b3);
+            tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+          tableWrap.appendChild(table);
+          att.appendChild(tableWrap);
+
+          c.appendChild(att);
+          return c;
+        }
+
+        function renderRecap(){
+          // Attendance recap page: summary of all attendance data
+          const c = h('div',{class:'container'});
+          const card = h('div',{class:'card'});
+          card.appendChild(h('h3',{},'Attendance Recap'));
+          card.appendChild(h('p',{},'Summary of student attendance across all subjects.'));
+
+          // Create a map of students with their attendance per subject
+          const recapData = {};
+          students_XII2.forEach(s => {
+            recapData[s.id] = {name: s.name, code: s.code, Math: '-', Physics: '-', English: '-'};
+          });
+
+          // Fill in attendance data from each subject
+          ['Math', 'Physics', 'English'].forEach(subj => {
+            const subjData = attendanceData[subj];
+            if(subjData) {
+              Object.keys(subjData).forEach(dateKey => {
+                const dayData = subjData[dateKey];
+                dayData.forEach(student => {
+                  if(recapData[student.id]) {
+                    recapData[student.id][subj] = student.status;
+                  }
+                });
+              });
+            }
+          });
+
+          // Create table
+          const table = h('table');
+          const trh = h('tr');
+          trh.appendChild(h('th',{},'Student Name'));
+          trh.appendChild(h('th',{},'ID Code'));
+          trh.appendChild(h('th',{},'Math'));
+          trh.appendChild(h('th',{},'Physics'));
+          trh.appendChild(h('th',{},'English'));
+          table.appendChild(trh);
+
+          const tbody = h('tbody');
+          Object.values(recapData).forEach(s => {
+            const tr = h('tr');
+            const td1 = h('td',{style:'font-weight:700'}); td1.textContent = s.name;
+            const td2 = h('td',{style:'font-size:0.85rem;color:var(--muted)'}); td2.textContent = s.code;
+            
+            // Math status
+            const td3 = h('td');
+            td3.appendChild(h('span',{class:'pill '+(s.Math===''?'not-filled':s.Math==='present'?'present':s.Math==='absent'?'absent':s.Math==='excused'?'excused':'')}, s.Math===''?'-':capitalize(s.Math)));
+            
+            // Physics status
+            const td4 = h('td');
+            td4.appendChild(h('span',{class:'pill '+(s.Physics===''?'not-filled':s.Physics==='present'?'present':s.Physics==='absent'?'absent':s.Physics==='excused'?'excused':'')}, s.Physics===''?'-':capitalize(s.Physics)));
+            
+            // English status
+            const td5 = h('td');
+            td5.appendChild(h('span',{class:'pill '+(s.English===''?'not-filled':s.English==='present'?'present':s.English==='absent'?'absent':s.English==='excused'?'excused':'')}, s.English===''?'-':capitalize(s.English)));
+            
+            tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4); tr.appendChild(td5);
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+          card.appendChild(table);
+          
+          c.appendChild(card);
+          return c;
+        }
+
+        function getGrade(score){
+          const s = Number(score);
+          if(Number.isNaN(s) || s === '') return '-';
+          if(s >= 93) return 'A';
+          if(s >= 83) return 'B';
+          if(s >= 75) return 'C';
+          return 'D';
+        }
+
+        function renderAbout(){
+          // Scores page: input numeric scores per student
+          const c = h('div',{class:'container'});
+          
+          // controls section
+          const ctrl = h('div',{class:'card'});
+          ctrl.appendChild(h('h3',{},'Input Scores'));
+          
+          const row = h('div',{class:'row inputs'});
+          
+          // Subject dropdown
+          const in1 = h('div');
+          in1.appendChild(h('label',{},'Subject'));
+          const selectSubj = h('select');
+          selectSubj.innerHTML = '<option value="Math">Math</option><option value="Physics">Physics</option><option value="English">English</option>';
+          selectSubj.value = state.scoreSubject;
+          selectSubj.addEventListener('change', e=> { 
+            state.scoreSubject = e.target.value;
+            rerender();
+          });
+          selectSubj.style.cssText = 'width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;background:#ffffff;font-family:var(--font-sans);font-size:0.95rem;font-weight:600;color:#1e293b;cursor:pointer;transition:all 0.2s ease;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%232563eb\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:20px;padding-right:40px;';
+          selectSubj.addEventListener('focus', e => { 
+            e.target.style.borderColor = 'var(--accent-600)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
+          });
+          selectSubj.addEventListener('blur', e => { 
+            e.target.style.borderColor = 'var(--border)';
+            e.target.style.boxShadow = 'none';
+          });
+          in1.appendChild(selectSubj);
+          row.appendChild(in1);
+          
+          // Ulangan Ke dropdown
+          const in2 = h('div');
+          in2.appendChild(h('label',{},'Ulangan Ke'));
+          const selectQuiz = h('select');
+          selectQuiz.innerHTML = '<option value="1">1</option><option value="2">2</option><option value="3">3</option>';
+          selectQuiz.value = state.scoreQuiz;
+          selectQuiz.addEventListener('change', e=> { 
+            state.scoreQuiz = e.target.value;
+            rerender();
+          });
+          selectQuiz.style.cssText = selectSubj.style.cssText;
+          selectQuiz.addEventListener('focus', e => { 
+            e.target.style.borderColor = 'var(--accent-600)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
+          });
+          selectQuiz.addEventListener('blur', e => { 
+            e.target.style.borderColor = 'var(--border)';
+            e.target.style.boxShadow = 'none';
+          });
+          in2.appendChild(selectQuiz);
+          row.appendChild(in2);
+          
+          // Semester dropdown
+          const in3 = h('div');
+          in3.appendChild(h('label',{},'Semester'));
+          const selectSem = h('select');
+          selectSem.innerHTML = '<option value="1">1</option><option value="2">2</option>';
+          selectSem.value = state.scoreSemester;
+          selectSem.addEventListener('change', e=> { 
+            state.scoreSemester = e.target.value;
+            rerender();
+          });
+          selectSem.style.cssText = selectSubj.style.cssText;
+          selectSem.addEventListener('focus', e => { 
+            e.target.style.borderColor = 'var(--accent-600)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.1)';
+          });
+          selectSem.addEventListener('blur', e => { 
+            e.target.style.borderColor = 'var(--border)';
+            e.target.style.boxShadow = 'none';
+          });
+          in3.appendChild(selectSem);
+          row.appendChild(in3);
+          
+          ctrl.appendChild(row);
+          
+          // Save button with stats header
+          const actionBar = h('div',{style:'display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-top:12px'});
+          
+          const saveBtn = h('button',{}, state.saving? '⏳ Saving...':'💾 Save Changes'); 
+          saveBtn.addEventListener('click', ()=>{ 
+            // Save current subject/quiz/semester scores to recap
+            const sourceData = scoresStorage[state.scoreSubject][state.scoreQuiz][state.scoreSemester];
+            const targetData = scoresRecap[state.scoreSubject][state.scoreQuiz][state.scoreSemester];
+            Object.assign(targetData, sourceData);
+            
+            state.saving=true; 
+            rerender(); 
+            setTimeout(()=>{ state.saving=false; rerender(); },800); 
+          });
+          actionBar.appendChild(saveBtn);
+          
+          ctrl.appendChild(actionBar);
+          c.appendChild(ctrl);
+          
+          // Get current scores for this subject/quiz/semester
+          const currentScores = scoresStorage[state.scoreSubject][state.scoreQuiz][state.scoreSemester];
+          
+          // Create array with scores and calculate ranking
+          const scoresList = students_XII2.map(s => ({
+            ...s,
+            score: currentScores[s.id] || '',
+            grade: getGrade(currentScores[s.id] || '')
+          })).sort((a, b) => {
+            const scoreA = Number(a.score);
+            const scoreB = Number(b.score);
+            if(Number.isNaN(scoreA)) return 1;
+            if(Number.isNaN(scoreB)) return -1;
+            return scoreB - scoreA;
+          }).map((item, idx) => ({
+            ...item,
+            rank: idx + 1
+          }));
+          
+          // Calculate statistics early
+          const validScores = scoresList.filter(s => s.score !== '' && !Number.isNaN(Number(s.score))).map(s => Number(s.score));
+          const avgScore = validScores.length ? (validScores.reduce((a,b)=>a+b,0)/validScores.length).toFixed(2) : '—';
+          const passCount = validScores.filter(s => s >= 75).length;
+          const passRate = validScores.length ? ((passCount / validScores.length) * 100).toFixed(1) : '0';
+          
+          // Stats card at top
+          const statsCard = h('div',{class:'card',style:'margin-top:20px'});
+          const statsSection = h('div',{style:'display:flex;gap:32px;flex-wrap:wrap'});
+          
+          const avgDiv = h('div');
+          avgDiv.appendChild(h('div',{style:'font-weight:700;color:#475569;font-size:1.05rem;margin-bottom:6px'},'Class Average'));
+          const avgVal = h('div',{style:'font-size:2.4rem;font-weight:900;color:var(--accent)'}); 
+          avgVal.textContent = avgScore;
+          avgDiv.appendChild(avgVal);
+          statsSection.appendChild(avgDiv);
+          
+          const passDiv = h('div');
+          passDiv.appendChild(h('div',{style:'font-weight:700;color:#475569;font-size:1.05rem;margin-bottom:6px'},'Pass Rate (≥75)'));
+          const passVal = h('div',{style:'font-size:2.4rem;font-weight:900;color:var(--success)'}); 
+          passVal.textContent = passRate + '%';
+          passDiv.appendChild(passVal);
+          statsSection.appendChild(passDiv);
+          
+          statsCard.appendChild(statsSection);
+          c.appendChild(statsCard);
+          
+          // Scores card
+          const card = h('div',{class:'card'});
+          card.appendChild(h('h3',{},(state.scoreQuiz) + ' - Semester ' + (state.scoreSemester) + ' - ' + state.scoreSubject));
+          card.appendChild(h('p',{},'Enter and view student scores with rankings and grades.'));
+
+          const table = h('table');
+          const trh = h('tr');
+          trh.appendChild(h('th',{},'Rank'));
+          trh.appendChild(h('th',{},'Student Name'));
+          trh.appendChild(h('th',{},'ID Code'));
+          trh.appendChild(h('th',{},'Score'));
+          trh.appendChild(h('th',{},'Grade'));
+          table.appendChild(trh);
+
+          const tbody = h('tbody');
+          scoresList.forEach(s=>{
+            const tr = h('tr');
+            
+            const tdRank = h('td',{style:'font-weight:700;color:var(--accent)'}); 
+            tdRank.textContent = s.score === '' || s.score === null ? '-' : s.rank;
+            
+            const td1 = h('td',{style:'font-weight:700'}); 
+            td1.textContent = s.name;
+            
+            const td2 = h('td',{style:'font-size:0.85rem;color:var(--muted)'}); 
+            td2.textContent = s.code;
+            
+            // Score input
+            const td3 = h('td');
+            const input = h('input',{
+              type:'number',
+              value: (s.score || ''),
+              min: '0',
+              max: '100',
+              style:'width:100%;min-width:120px;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:0.95rem;font-weight:600;text-align:center;transition:all 0.2s ease'
+            });
+            input.addEventListener('input', e=>{ 
+              currentScores[s.id] = e.target.value;
+            });
+            input.addEventListener('keypress', e=>{
+              if(e.key === 'Enter') {
+                rerender();
+              }
+            });
+            input.addEventListener('focus', e=>{ e.target.style.borderColor='var(--accent)'; e.target.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'; });
+            input.addEventListener('blur', e=>{ e.target.style.borderColor='var(--border)'; e.target.style.boxShadow='none'; });
+            td3.appendChild(input);
+            
+            // Grade display
+            const td4 = h('td',{style:'font-weight:700;font-size:1.1rem'});
+            const gradeVal = getGrade(s.score);
+            let gradeColor = '#64748b';
+            if(gradeVal === 'A') gradeColor = '#10b981';
+            else if(gradeVal === 'B') gradeColor = '#3b82f6';
+            else if(gradeVal === 'C') gradeColor = '#f59e0b';
+            else if(gradeVal === 'D') gradeColor = '#f43f5e';
+            td4.style.color = gradeColor;
+            td4.textContent = gradeVal;
+            
+            tr.appendChild(tdRank); tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+          card.appendChild(table);
+
+          c.appendChild(card);
+          return c;
+        }
+
+        function renderScoresRecap(){
+          // Scores recap page: summary of all saved scores with rankings and grades
+          const c = h('div',{class:'container'});
+          const card = h('div',{class:'card'});
+          card.appendChild(h('h3',{},'Scores Recap'));
+          card.appendChild(h('p',{},'Summary of saved student scores with rankings and grades.'));
+
+          // Create summary by subject/quiz/semester
+          const subjectTabs = h('div',{style:'margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px'});
+          
+          ['Math', 'Physics', 'English'].forEach(subj => {
+            [1,2,3].forEach(quiz => {
+              [1,2].forEach(sem => {
+                const isActive = state.scoreSubject === subj && state.scoreQuiz === String(quiz) && state.scoreSemester === String(sem);
+                const btn = h('button',{class: isActive ? '' : 'secondary'});
+                btn.textContent = `${subj} - Q${quiz} - S${sem}`;
+                btn.style.padding = '8px 12px';
+                btn.style.fontSize = '0.85rem';
+                if(isActive) {
+                  btn.style.background = 'var(--accent)';
+                  btn.style.color = 'white';
+                  btn.style.borderColor = 'var(--accent)';
+                  btn.style.fontWeight = '700';
+                }
+                btn.addEventListener('click', () => {
+                  // Update state and re-render with selected filters
+                  state.scoreSubject = subj;
+                  state.scoreQuiz = String(quiz);
+                  state.scoreSemester = String(sem);
+                  rerender();
+                });
+                subjectTabs.appendChild(btn);
+              });
+            });
+          });
+          card.appendChild(subjectTabs);
+
+          // Create table for current selection
+          const currentScores = scoresRecap[state.scoreSubject][state.scoreQuiz][state.scoreSemester];
+          
+          // Check if there's any data
+          const hasData = Object.values(currentScores).some(s => s !== '');
+          
+          if(!hasData) {
+            const emptyMsg = h('div',{style:'text-align:center;padding:40px 20px;color:var(--muted)'});
+            emptyMsg.appendChild(h('p',{},'No scores saved for ' + state.scoreSubject + ' - Quiz ' + state.scoreQuiz + ' - Semester ' + state.scoreSemester));
+            card.appendChild(emptyMsg);
+          } else {
+            // Create array with scores and rankings
+            const scoresList = students_XII2.map(s => ({
+              ...s,
+              score: currentScores[s.id] || '',
+              grade: getGrade(currentScores[s.id] || '')
+            })).sort((a, b) => {
+              const scoreA = Number(a.score);
+              const scoreB = Number(b.score);
+              if(Number.isNaN(scoreA) || a.score === '') return 1;
+              if(Number.isNaN(scoreB) || b.score === '') return -1;
+              return scoreB - scoreA;
+            }).map((item, idx) => ({
+              ...item,
+              rank: item.score === '' ? '-' : idx + 1
+            }));
+            
+            // Calculate statistics early
+            const validScores = scoresList.filter(s => s.score !== '' && !Number.isNaN(Number(s.score))).map(s => Number(s.score));
+            const avgScore = validScores.length ? (validScores.reduce((a,b)=>a+b,0)/validScores.length).toFixed(2) : '—';
+            const passCount = validScores.filter(s => s >= 75).length;
+            const passRate = validScores.length ? ((passCount / validScores.length) * 100).toFixed(1) : '0';
+            const highestScore = validScores.length ? Math.max(...validScores) : '—';
+            const lowestScore = validScores.length ? Math.min(...validScores) : '—';
+            
+            // Stats card at top
+            const statsCardTop = h('div',{style:'display:flex;gap:32px;flex-wrap:wrap;margin-bottom:24px'});
+            
+            const avgDiv = h('div');
+            avgDiv.appendChild(h('div',{style:'font-weight:700;color:#475569;font-size:1.05rem;margin-bottom:6px'},'Class Avg'));
+            const avgVal = h('div',{style:'font-size:2.4rem;font-weight:900;color:var(--accent)'}); 
+            avgVal.textContent = avgScore;
+            avgDiv.appendChild(avgVal);
+            statsCardTop.appendChild(avgDiv);
+            
+            const passDiv = h('div');
+            passDiv.appendChild(h('div',{style:'font-weight:700;color:#475569;font-size:1.05rem;margin-bottom:6px'},'Pass Rate'));
+            const passVal = h('div',{style:'font-size:2.4rem;font-weight:900;color:var(--success)'}); 
+            passVal.textContent = passRate + '%';
+            passDiv.appendChild(passVal);
+            statsCardTop.appendChild(passDiv);
+            
+            const highDiv = h('div');
+            highDiv.appendChild(h('div',{style:'font-weight:700;color:#475569;font-size:1.05rem;margin-bottom:6px'},'Highest'));
+            const highVal = h('div',{style:'font-size:2.4rem;font-weight:900;color:#10b981'}); 
+            highVal.textContent = highestScore;
+            highDiv.appendChild(highVal);
+            statsCardTop.appendChild(highDiv);
+            
+            const lowDiv = h('div');
+            lowDiv.appendChild(h('div',{style:'font-weight:700;color:#475569;font-size:1.05rem;margin-bottom:6px'},'Lowest'));
+            const lowVal = h('div',{style:'font-size:2.4rem;font-weight:900;color:#f43f5e'}); 
+            lowVal.textContent = lowestScore;
+            lowDiv.appendChild(lowVal);
+            statsCardTop.appendChild(lowDiv);
+            
+            card.appendChild(statsCardTop);
+
+            const table = h('table');
+            const trh = h('tr');
+            trh.appendChild(h('th',{},'Rank'));
+            trh.appendChild(h('th',{},'Student Name'));
+            trh.appendChild(h('th',{},'ID Code'));
+            trh.appendChild(h('th',{},'Score'));
+            trh.appendChild(h('th',{},'Grade'));
+            table.appendChild(trh);
+
+            const tbody = h('tbody');
+            scoresList.forEach(s=>{
+              const tr = h('tr');
+              
+              const tdRank = h('td',{style:'font-weight:700;color:var(--accent)'}); 
+              tdRank.textContent = s.rank;
+              
+              const td1 = h('td',{style:'font-weight:700'}); 
+              td1.textContent = s.name;
+              
+              const td2 = h('td',{style:'font-size:0.85rem;color:var(--muted)'}); 
+              td2.textContent = s.code;
+              
+              const td3 = h('td',{style:'border-radius:8px;background:#e0f2fe;padding:8px 12px;font-weight:700'}); 
+              td3.textContent = s.score === '' ? '-' : s.score;
+              
+              const td4 = h('td',{style:'font-weight:700;font-size:1.1rem'});
+              const gradeVal = s.grade;
+              let gradeColor = '#64748b';
+              if(gradeVal === 'A') gradeColor = '#10b981';
+              else if(gradeVal === 'B') gradeColor = '#3b82f6';
+              else if(gradeVal === 'C') gradeColor = '#f59e0b';
+              else if(gradeVal === 'D') gradeColor = '#f43f5e';
+              td4.style.color = gradeColor;
+              td4.textContent = gradeVal;
+              
+              tr.appendChild(tdRank); tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
+              tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            card.appendChild(table);
+          }
+          
+          c.appendChild(card);
+          return c;
+        }
+
+        function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+        // --- router & render ---
+        function render(){
+          clearRoot();
+          root.appendChild(renderNav());
+          if(route === '/' ) root.appendChild(renderHome());
+          else if(route === '/absence') root.appendChild(renderAbsence());
+          else if(route === '/recap') root.appendChild(renderRecap());
+          else if(route === '/scores') root.appendChild(renderAbout());
+          else if(route === '/scores-recap') root.appendChild(renderScoresRecap());
+          else root.appendChild(renderHome());
+        }
+
+        function rerender(){ render(); }
+
+        window.addEventListener('hashchange', ()=>{ route = location.hash.replace('#','') || '/'; render(); });
+
+        // initial
+        render();
+      })();
+    </script>
+  </body>
+</html>
